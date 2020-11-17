@@ -118,7 +118,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding() && run.getResult()==Result.SUCCESS;
+                return run!=null && !run.isBuilding() && run.getResult()==Result.SUCCESS;
             }
         };
         public static final Permalink LAST_SUCCESSFUL_BUILD = new PeepholePermalink() {
@@ -132,7 +132,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding() && run.getResult().isBetterOrEqualTo(Result.UNSTABLE);
+                return run!=null && !run.isBuilding() && run.getResult().isBetterOrEqualTo(Result.UNSTABLE);
             }
         };
         public static final Permalink LAST_FAILED_BUILD = new PeepholePermalink() {
@@ -146,7 +146,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding() && run.getResult()==Result.FAILURE;
+                return run!=null && !run.isBuilding() && run.getResult()==Result.FAILURE;
             }
         };
 
@@ -161,7 +161,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding() && run.getResult()==Result.UNSTABLE;
+                return run!=null && !run.isBuilding() && run.getResult()==Result.UNSTABLE;
             }
         };
 
@@ -176,7 +176,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding() && run.getResult()!=Result.SUCCESS;
+                return run!=null && !run.isBuilding() && run.getResult()!=Result.SUCCESS;
             }
         };
         public static final Permalink LAST_COMPLETED_BUILD = new PeepholePermalink() {
@@ -190,7 +190,7 @@ public interface PermalinkProjectAction extends Action {
 
             @Override
             public boolean apply(Run<?, ?> run) {
-                return !run.isBuilding();
+                return run!=null && !run.isBuilding();
             }
         };
 
