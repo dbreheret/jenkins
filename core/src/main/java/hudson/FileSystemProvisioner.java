@@ -46,8 +46,6 @@ import java.io.OutputStream;
 /**
  * Prepares and provisions workspaces for {@link AbstractProject}s.
  *
- * <p>
- *
  *
  * <p>
  * STILL A WORK IN PROGRESS. SUBJECT TO CHANGE! DO NOT EXTEND.
