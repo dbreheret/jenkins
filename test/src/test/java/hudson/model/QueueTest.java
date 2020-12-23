@@ -446,7 +446,7 @@ public class QueueTest {
         try {
             build = m.scheduleBuild2(0).get(60, TimeUnit.SECONDS);
         } catch (TimeoutException x) {
-            throw (AssertionError) new AssertionError(r.jenkins.getQueue().getItems().toString()).initCause(x);
+            throw new AssertionError(r.jenkins.getQueue().getItems().toString(), x);
         }
         r.assertBuildStatusSuccess(build);
         assertEquals("", build.getBuiltOnStr());
@@ -457,7 +457,7 @@ public class QueueTest {
 
     @Issue("JENKINS-10944")
     @Test public void flyweightTasksBlockedByShutdown() throws Exception {
-        r.jenkins.doQuietDown(true, 0);
+        r.jenkins.doQuietDown(true, 0, null);
         AtomicInteger cnt = new AtomicInteger();
         TestFlyweightTask task = new TestFlyweightTask(cnt, null);
         assertTrue(Queue.isBlockedByShutdown(task));
