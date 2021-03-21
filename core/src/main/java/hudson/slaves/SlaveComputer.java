@@ -109,7 +109,7 @@ import org.jenkinsci.remoting.util.LoggingChannelListener;
  */
 public class SlaveComputer extends Computer {
     private volatile Channel channel;
-    private volatile transient boolean acceptingTasks = true;
+    private transient volatile boolean acceptingTasks = true;
     private Charset defaultCharset;
     private Boolean isUnix;
     /**
@@ -1026,7 +1026,7 @@ public class SlaveComputer extends Computer {
     private static class SlaveInitializer extends MasterToSlaveCallable<Void,RuntimeException> {
         final int ringBufferSize;
 
-        public SlaveInitializer(int ringBufferSize) {
+        SlaveInitializer(int ringBufferSize) {
             this.ringBufferSize = ringBufferSize;
         }
 
@@ -1080,7 +1080,7 @@ public class SlaveComputer extends Computer {
      * Helper method for Jelly.
      */
     @Restricted(DoNotUse.class)
-    @RestrictedSince("TODO")
+    @RestrictedSince("2.163")
     public static List<SlaveSystemInfo> getSystemInfoExtensions() {
         return SlaveSystemInfo.all();
     }

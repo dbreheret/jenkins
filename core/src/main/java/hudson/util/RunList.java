@@ -205,7 +205,7 @@ public class RunList<R extends Run> extends AbstractList<R> {
     /**
      * Returns elements that satisfy the given predicate.
      * <em>Warning:</em> this method mutates the original list and then returns it.
-     * @since TODO
+     * @since 2.279
      */
     public RunList<R> filter(Predicate<R> predicate) {
         return filter(new PredicateAdapter(predicate));
@@ -214,7 +214,7 @@ public class RunList<R extends Run> extends AbstractList<R> {
     private static class PredicateAdapter<T> implements com.google.common.base.Predicate<T> {
         private final Predicate<T> predicate;
 
-        public PredicateAdapter(Predicate<T> predicate) {
+        PredicateAdapter(Predicate<T> predicate) {
             this.predicate = predicate;
         }
 
