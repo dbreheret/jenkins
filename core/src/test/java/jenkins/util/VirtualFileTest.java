@@ -24,7 +24,6 @@
 
 package jenkins.util;
 
-import com.google.common.collect.ImmutableSet;
 import hudson.FilePath;
 import hudson.Functions;
 import hudson.Util;
@@ -40,7 +39,7 @@ import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.jvnet.hudson.test.Issue;
 
-import javax.annotation.Nonnull;
+import edu.umd.cs.findbugs.annotations.NonNull;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -56,14 +55,25 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.lessThan;
+import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -119,7 +129,7 @@ public class VirtualFileTest {
     @Test public void list() throws Exception {
         File root = tmp.getRoot();
         FilePath rootF = new FilePath(root);
-        Set<String> paths = ImmutableSet.of("top.txt", "sub/mid.txt", "sub/subsub/lowest.txt", ".hg/config.txt", "very/deep/path/here");
+        Set<String> paths = new HashSet<>(Arrays.asList("top.txt", "sub/mid.txt", "sub/subsub/lowest.txt", ".hg/config.txt", "very/deep/path/here"));
         for (String path : paths) {
             rootF.child(path).write("", null);
         }
@@ -952,12 +962,14 @@ public class VirtualFileTest {
             this.description = description;
         }
 
+        @Override
         public void describeTo(Description description) {
             description.appendText(this.description);
         }
 
         public static VFMatcher hasName(String expectedName) {
             return new VFMatcher("Has name: " + expectedName) {
+                @Override
                 protected boolean matchesSafely(VirtualFile vf) {
                     return expectedName.equals(vf.getName());
                 }
@@ -1347,7 +1359,7 @@ public class VirtualFileTest {
         File childFile1 = new File(parentFile, child1);
         VirtualFile vf1 = new VirtualFileMinimalImplementation(childFile1);
         VirtualFile vf2 = null;
-        assertFalse(vf1.equals(vf2));
+        assertNotEquals(vf1, vf2);
     }
 
     @Test
@@ -1360,7 +1372,7 @@ public class VirtualFileTest {
         String child2 = "child2";
         File childFile2 = new File(parentFile, child2);
         VirtualFile vf2 = new VirtualFileMinimalImplementation(childFile2);
-        assertFalse(vf1.equals(vf2));
+        assertNotEquals(vf1, vf2);
     }
 
     @Test
@@ -1373,7 +1385,7 @@ public class VirtualFileTest {
         String child2 = child1;
         File childFile2 = new File(parentFile, child2);
         VirtualFile vf2 = new VirtualFileMinimalImplementation(childFile2);
-        assertTrue(vf1.equals(vf2));
+        assertEquals(vf1, vf2);
     }
 
     @Test
@@ -1383,7 +1395,7 @@ public class VirtualFileTest {
         String child1 = "child1";
         File childFile1 = new File(parentFile, child1);
         VirtualFile vf1 = new VirtualFileMinimalImplementation(childFile1);
-        assertFalse(vf1.equals(child1));
+        assertNotEquals(vf1, child1);
     }
 
     @Test
@@ -1511,13 +1523,13 @@ public class VirtualFileTest {
             this.root = root;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public String getName() {
             return file.getName();
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public URI toURI() {
             return file.toURI();
@@ -1543,7 +1555,7 @@ public class VirtualFileTest {
             return false;
         }
 
-        @Nonnull
+        @NonNull
         @Override
         public VirtualFile[] list() {
             File[] kids = file.listFiles();
@@ -1561,9 +1573,9 @@ public class VirtualFileTest {
             return new VirtualFileMinimalImplementation(kid, root);
         }
 
-        @Nonnull
+        @NonNull
         @Override
-        public VirtualFile child(@Nonnull String name) {
+        public VirtualFile child(@NonNull String name) {
             return child(new File(file, name), root);
         }
 
@@ -1591,11 +1603,11 @@ public class VirtualFileTest {
 
     private static class VirtualFileMinimalImplementationWithDescendants extends VirtualFileMinimalImplementation {
 
-        public VirtualFileMinimalImplementationWithDescendants(File file) {
+        VirtualFileMinimalImplementationWithDescendants(File file) {
             super(file);
         }
 
-        public VirtualFileMinimalImplementationWithDescendants(File file, File root) {
+        VirtualFileMinimalImplementationWithDescendants(File file, File root) {
             super(file, root);
         }
 
@@ -1605,7 +1617,7 @@ public class VirtualFileTest {
         }
 
         @Override
-        public boolean isDescendant(String childRelativePath) throws IOException {
+        public boolean isDescendant(String childRelativePath) {
             return true;
         }
 

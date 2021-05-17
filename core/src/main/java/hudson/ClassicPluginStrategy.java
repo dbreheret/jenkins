@@ -31,6 +31,7 @@ import hudson.util.CyclicGraphDetector;
 import hudson.util.CyclicGraphDetector.CycleDetectedException;
 import hudson.util.IOUtils;
 import hudson.util.MaskingClassLoader;
+import java.lang.reflect.InvocationTargetException;
 import jenkins.ClassLoaderReflectionToolkit;
 import jenkins.ExtensionFilter;
 import jenkins.plugins.DetachedPluginsUtil;
@@ -85,6 +86,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
      * Filter for jar files.
      */
     private static final FilenameFilter JAR_FILTER = new FilenameFilter() {
+        @Override
         public boolean accept(File dir,String name) {
             return name.endsWith(".jar");
         }
@@ -320,9 +322,11 @@ public class ClassicPluginStrategy implements PluginStrategy {
         return base;
     }
 
+    @Override
     public void initializeComponents(PluginWrapper plugin) {
     }
 
+    @Override
     public <T> List<ExtensionComponent<T>> findComponents(Class<T> type, Hudson hudson) {
 
         List<ExtensionFinder> finders;
@@ -362,6 +366,7 @@ public class ClassicPluginStrategy implements PluginStrategy {
         return filtered;
     }
 
+    @Override
     public void load(PluginWrapper wrapper) throws IOException {
         // override the context classloader. This no longer makes sense,
         // but it is left for the backward compatibility
@@ -375,14 +380,14 @@ public class ClassicPluginStrategy implements PluginStrategy {
             } else {
                 try {
                     Class<?> clazz = wrapper.classLoader.loadClass(className);
-                    Object o = clazz.newInstance();
+                    Object o = clazz.getDeclaredConstructor().newInstance();
                     if(!(o instanceof Plugin)) {
                         throw new IOException(className+" doesn't extend from hudson.Plugin");
                     }
                     wrapper.setPlugin((Plugin) o);
                 } catch (LinkageError | ClassNotFoundException e) {
                     throw new IOException("Unable to load " + className + " from " + wrapper.getShortName(),e);
-                } catch (IllegalAccessException | InstantiationException e) {
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
                     throw new IOException("Unable to create instance of " + className + " from " + wrapper.getShortName(),e);
                 }
             }

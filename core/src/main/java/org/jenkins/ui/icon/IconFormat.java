@@ -26,9 +26,9 @@ package org.jenkins.ui.icon;
 
 /**
  * Format for the icon.
- * @since TODO
+ * @since 2.283
  */
 public enum IconFormat {
     IMG,
-    EXTERNAL_SVG_SPRITE,
+    EXTERNAL_SVG_SPRITE
 }
